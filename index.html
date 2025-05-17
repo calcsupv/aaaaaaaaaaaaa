@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>YouTube URL変換ツール</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px 0;
+      width: 100%;
+    }
+    .output {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>YouTube URLを通常形式に変換</h2>
+  <input type="text" id="inputUrl" placeholder="YouTubeのURLを入力">
+  <button onclick="convert()">変換する</button>
+  <div class="output" id="outputUrl"></div>
+
+  <script>
+    function convert() {
+      const input = document.getElementById('inputUrl').value.trim();
+      try {
+        let url = new URL(input);
+        let videoId = '';
+
+        // モバイルURLの場合やパラメータがエンコードされている場合に対応
+        if (url.hostname.includes('youtube.com') || url.hostname.includes('youtu.be')) {
+          if (url.hostname.includes('youtu.be')) {
+            videoId = url.pathname.replace('/', '');
+          } else {
+            let vParam = url.searchParams.get('v');
+            if (vParam) {
+              videoId = vParam;
+            } else {
+              // エンコードされたv=xxx?autoplay=1 の形式に対応
+              let raw = decodeURIComponent(url.href);
+              const match = raw.match(/v=([^&\?]+)/);
+              if (match) {
+                videoId = match[1];
+              }
+            }
+          }
+        }
+
+        if (videoId) {
+          const resultUrl = `https://www.youtube.com/watch?v=${videoId}`;
+          document.getElementById('outputUrl').innerHTML = 
+            `変換後URL: <a href="${resultUrl}" target="_blank">${resultUrl}</a>`;
+        } else {
+          document.getElementById('outputUrl').textContent = '動画IDが見つかりませんでした。';
+        }
+      } catch (e) {
+        document.getElementById('outputUrl').textContent = '無効なURLです。';
+      }
+    }
+  </script>
+</body>
+</html>
