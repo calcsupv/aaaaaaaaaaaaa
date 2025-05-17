@@ -1,81 +1,50 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <title>動画リスト表示</title>
-  <style>
-    body {
-      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
-      padding: 40px;
-    }
-    .video-item {
-      background: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .video-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-    .video-date {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 8px;
-    }
-    .video-link {
-      color: #007acc;
-      text-decoration: none;
-    }
-    .video-link:hover {
-      text-decoration: underline;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>日付・タイトル・URL変換ツール</title>
 </head>
 <body>
-  <h1>動画リスト</h1>
-  <div id="video-list"></div>
+<h2>変換したい情報を入力してください</h2>
+<textarea id="inputText" rows="6" cols="60" placeholder="URL&#10;タイトル&#10;日付 (例: 02 Jul 2021)"></textarea><br>
+<button id="convertBtn">変換</button>
 
-  <script>
-    const videos = [
-      {
-        date: "2021/07/02",
-        title: "ハンドパワーだけで建物を木っ端微塵にしてみた【GMOD ゆっくり実況】",
-        url: "https://web.archive.org/web/20240207182502id_/https://rr4---sn-5hne6nzy.googlevideo.com/videoplayback?expire=1707351898&ei=-srDZcHWHMaXv_IPlfy2wAo&ip=135.181.141.12&id=o-AMX8Er7Z3mVillXActfMvW4CnshOZhmErIgPEr6iuhq7&itag=22&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&spc=UWF9f256K8vI8BFqdrYBp-5JoOmqQLJClb0TYljAd-FmtE&vprv=1&svpuc=1&mime=video%2Fmp4&ns=TO8lKq-hGQMQJweLv9cv1c8Q&cnr=14&ratebypass=yes&dur=734.725&lmt=1625470355638080&fexp=24007246&c=WEB&sefc=1&txp=5535432&n=V6Mg5W_-XWK6PA&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Ccnr%2Cratebypass%2Cdur%2Clmt&sig=AJfQdSswRgIhAIO4vtpo3PZVgSjYBfCdBKhd6fr-pc23f-Vle-VT28sOAiEArePbBr6mCvJC4qS25_j_RmNYT93NkxntDm2xAmMm-Uk%3D&video_id=CurU_UWk5b8&redirect_counter=1&cm2rm=sn-5gos77z&req_id=bb511232e6f9a3ee&cms_redirect=yes&cmsv=e&mh=MV&mm=34&mn=sn-5hne6nzy&ms=ltu&mt=1707330055&mv=m&mvi=4&pl=21&lsparams=mh,mm,mn,ms,mv,mvi,pl&lsig=AAO5W4owRAIgVwijfgYct4Ra6vuPE6Ztx3FiyGppYI_XZ8beLn1I3j0CIF-0HAYdsDyo85o9JC71NyYiFwWoqoffh0JTMFverv-0"
-      }
-    ];
+<h3>変換結果</h3>
+<pre id="output"></pre>
 
-    const videoList = document.getElementById("video-list");
+<script>
+function convertDate(inputDate) {
+  // 02 Jul 2021 -> 2021/07/02 に変換
+  const months = {
+    Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
+    Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12'
+  };
+  const parts = inputDate.trim().split(' ');
+  if(parts.length !== 3) return null;
+  const day = parts[0].padStart(2, '0');
+  const month = months[parts[1]];
+  const year = parts[2];
+  if(!month) return null;
+  return `${year}/${month}/${day}`;
+}
 
-    videos.forEach(video => {
-      const item = document.createElement("div");
-      item.className = "video-item";
-
-      const title = document.createElement("div");
-      title.className = "video-title";
-      title.textContent = video.title;
-
-      const date = document.createElement("div");
-      date.className = "video-date";
-      date.textContent = `投稿日: ${video.date}`;
-
-      const link = document.createElement("a");
-      link.className = "video-link";
-      link.href = video.url;
-      link.textContent = "動画を見る";
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-
-      item.appendChild(title);
-      item.appendChild(date);
-      item.appendChild(link);
-
-      videoList.appendChild(item);
-    });
-  </script>
+document.getElementById('convertBtn').addEventListener('click', () => {
+  const lines = document.getElementById('inputText').value.trim().split('\n');
+  if(lines.length < 3) {
+    alert('URL, タイトル, 日付の3行を正しく入力してください');
+    return;
+  }
+  const url = lines[0].trim();
+  const title = lines[1].trim();
+  const dateRaw = lines[2].trim();
+  const date = convertDate(dateRaw);
+  if(!date) {
+    alert('日付の形式が正しくありません。例：02 Jul 2021');
+    return;
+  }
+  const output = `{ date: '${date}', title: '${title}', url: '${url}' }`;
+  document.getElementById('output').textContent = output;
+});
+</script>
 </body>
 </html>
