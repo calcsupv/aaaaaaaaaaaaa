@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>動画リスト表示</title>
+  <style>
+    body {
+      font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      padding: 40px;
+    }
+    .video-item {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .video-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .video-date {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .video-link {
+      color: #007acc;
+      text-decoration: none;
+    }
+    .video-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>動画リスト</h1>
+  <div id="video-list"></div>
+
+  <script>
+    const videos = [
+      {
+        date: "2021/07/02",
+        title: "ハンドパワーだけで建物を木っ端微塵にしてみた【GMOD ゆっくり実況】",
+        url: "https://web.archive.org/web/20240207182502id_/https://rr4---sn-5hne6nzy.googlevideo.com/videoplayback?expire=1707351898&ei=-srDZcHWHMaXv_IPlfy2wAo&ip=135.181.141.12&id=o-AMX8Er7Z3mVillXActfMvW4CnshOZhmErIgPEr6iuhq7&itag=22&source=youtube&requiressl=yes&xpc=EgVo2aDSNQ%3D%3D&spc=UWF9f256K8vI8BFqdrYBp-5JoOmqQLJClb0TYljAd-FmtE&vprv=1&svpuc=1&mime=video%2Fmp4&ns=TO8lKq-hGQMQJweLv9cv1c8Q&cnr=14&ratebypass=yes&dur=734.725&lmt=1625470355638080&fexp=24007246&c=WEB&sefc=1&txp=5535432&n=V6Mg5W_-XWK6PA&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cxpc%2Cspc%2Cvprv%2Csvpuc%2Cmime%2Cns%2Ccnr%2Cratebypass%2Cdur%2Clmt&sig=AJfQdSswRgIhAIO4vtpo3PZVgSjYBfCdBKhd6fr-pc23f-Vle-VT28sOAiEArePbBr6mCvJC4qS25_j_RmNYT93NkxntDm2xAmMm-Uk%3D&video_id=CurU_UWk5b8&redirect_counter=1&cm2rm=sn-5gos77z&req_id=bb511232e6f9a3ee&cms_redirect=yes&cmsv=e&mh=MV&mm=34&mn=sn-5hne6nzy&ms=ltu&mt=1707330055&mv=m&mvi=4&pl=21&lsparams=mh,mm,mn,ms,mv,mvi,pl&lsig=AAO5W4owRAIgVwijfgYct4Ra6vuPE6Ztx3FiyGppYI_XZ8beLn1I3j0CIF-0HAYdsDyo85o9JC71NyYiFwWoqoffh0JTMFverv-0"
+      }
+    ];
+
+    const videoList = document.getElementById("video-list");
+
+    videos.forEach(video => {
+      const item = document.createElement("div");
+      item.className = "video-item";
+
+      const title = document.createElement("div");
+      title.className = "video-title";
+      title.textContent = video.title;
+
+      const date = document.createElement("div");
+      date.className = "video-date";
+      date.textContent = `投稿日: ${video.date}`;
+
+      const link = document.createElement("a");
+      link.className = "video-link";
+      link.href = video.url;
+      link.textContent = "動画を見る";
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+
+      item.appendChild(title);
+      item.appendChild(date);
+      item.appendChild(link);
+
+      videoList.appendChild(item);
+    });
+  </script>
+</body>
+</html>
